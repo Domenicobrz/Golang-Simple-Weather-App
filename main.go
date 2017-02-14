@@ -2,15 +2,28 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"strconv"
 
 	"github.com/oschwald/geoip2-golang"
 )
 
 func main() {
+	/*
+	   select * from weather.forecast where woeid in (SELECT woeid FROM geo.places WHERE text="({lat},{lon})")
+
+	       'http://query.yahooapis.com/v1/public/yql?q='
+	                    + encodedQuery + '&format=json
+
+	   http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(SELECT%20woeid%20FROM%20geo.places%20WHERE%20text%3D%22(45%2C10)%22)&format=json
+
+	   e fai quello che vuoi col risultato in json
+	*/
+
 	http.HandleFunc("/", indexHandler)
 	http.ListenAndServe(":8080", nil)
 }
@@ -36,5 +49,29 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 	lat := strconv.FormatFloat(record.Location.Latitude, 'f', -1, 64)
 	lon := strconv.FormatFloat(record.Location.Longitude, 'f', -1, 64)
 
-	fmt.Fprint(w, "hello "+city+" "+subdiv+" "+country+" "+lat+" "+lon)
+	yahooquery := "select * from weather.forecast where woeid in (SELECT woeid FROM geo.places WHERE text=\"(" +
+		lat + "," + lon + ")\")"
+
+	Url, err := url.Parse("http://query.yahooapis.com/")
+	if err != nil {
+		fmt.Printf("url parsing failed")
+	}
+
+	parameters := url.Values{}
+	parameters.Add("q", yahooquery)
+	parameters.Add("format", "json")
+
+	Url.Path += "/v1/public/yql"
+	Url.RawQuery = parameters.Encode()
+	//fmt.Printf("Encoded URL is %q\n", Url.String())
+
+	yahoores, err := http.Get(Url.String())
+
+	fmt.Fprint(w, "hello "+city+" "+subdiv+" "+country+" "+lat+" "+lon+"  ")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	body, err := ioutil.ReadAll(yahoores.Body)
+	fmt.Fprint(w, string(body))
 }
