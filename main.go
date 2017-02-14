@@ -13,17 +13,6 @@ import (
 )
 
 func main() {
-	/*
-	   select * from weather.forecast where woeid in (SELECT woeid FROM geo.places WHERE text="({lat},{lon})")
-
-	       'http://query.yahooapis.com/v1/public/yql?q='
-	                    + encodedQuery + '&format=json
-
-	   http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(SELECT%20woeid%20FROM%20geo.places%20WHERE%20text%3D%22(45%2C10)%22)&format=json
-
-	   e fai quello che vuoi col risultato in json
-	*/
-
 	http.HandleFunc("/", indexHandler)
 	http.ListenAndServe(":8080", nil)
 }
