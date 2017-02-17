@@ -18,7 +18,7 @@ func main() {
 
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/getweatherinfo", getWeatherInfo)
-	http.Handle("/res", serveFile)
+	http.Handle("/res/", serveFile)
 	http.ListenAndServe(":8080", nil)
 }
 
