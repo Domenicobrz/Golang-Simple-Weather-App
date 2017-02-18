@@ -14,8 +14,7 @@ import (
 )
 
 func main() {
-	serveFile := http.StripPrefix("/res/", http.FileServer(http.Dir("./")))
-
+	serveFile := http.StripPrefix("/res/", http.FileServer(http.Dir(".")))
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/getweatherinfo", getWeatherInfo)
 	http.Handle("/res/", serveFile)
@@ -37,9 +36,9 @@ func getWeatherInfo(w http.ResponseWriter, req *http.Request) {
 		log.Fatal(err)
 	}
 
-	city := record.City.Names["en"]
+	/*city := record.City.Names["en"]
 	subdiv := record.Subdivisions[0].Names["en"]
-	country := record.Country.Names["en"]
+	country := record.Country.Names["en"]*/
 	lat := strconv.FormatFloat(record.Location.Latitude, 'f', -1, 64)
 	lon := strconv.FormatFloat(record.Location.Longitude, 'f', -1, 64)
 
@@ -57,11 +56,8 @@ func getWeatherInfo(w http.ResponseWriter, req *http.Request) {
 
 	Url.Path += "/v1/public/yql"
 	Url.RawQuery = parameters.Encode()
-	//fmt.Printf("Encoded URL is %q\n", Url.String())
 
 	yahoores, err := http.Get(Url.String())
-
-	fmt.Fprint(w, "hello "+city+" "+subdiv+" "+country+" "+lat+" "+lon+"  ")
 	if err != nil {
 		panic(err.Error())
 	}
