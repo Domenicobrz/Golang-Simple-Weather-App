@@ -26,4 +26,10 @@ function reqHandler(evt) {
     lon = queryResult.results.channel.item.long;
 
     var condition_code = queryResult.results.channel.item.condition.code;
+
+    // up to 25: display storm
+    // up to 30 & 44:    display cloudy
+    // up to 34: dispay  sunny
+    // 35, 37-43 45-47   storm
+    // 36 sunny
 }
