@@ -11,12 +11,12 @@ import (
 	"strconv"
 
 	"github.com/oschwald/geoip2-golang"
+	"github.com/tidwall/gjson"
 )
 
 func main() {
 	serveFile := http.StripPrefix("/res/", http.FileServer(http.Dir(".")))
 	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/getweatherinfo", getWeatherInfo)
 	http.Handle("/res/", serveFile)
 	http.ListenAndServe(":8080", nil)
 }
@@ -63,7 +63,16 @@ func getWeatherInfo(w http.ResponseWriter, req *http.Request) {
 	}
 
 	body, err := ioutil.ReadAll(yahoores.Body)
-	fmt.Fprint(w, string(body))
+	/*city = queryResult.results.channel.location.city;
+	  country = queryResult.results.channel.location.country;
+	  date = queryResult.results.channel.item.condition.date;
+	  temperature = queryResult.results.channel.item.condition.temp;
+	  weather = queryResult.results.channel.item.condition.text;
+	  lat = queryResult.results.channel.item.lat;
+	  lon = queryResult.results.channel.item.long;
+	  var condition_code = queryResult.results.channel.item.condition.code;*/
+	result := gjson.GetBytes(body, "query.results.channel.location.city")
+	fmt.Println(result)
 }
 
 func indexHandler(w http.ResponseWriter, req *http.Request) {
@@ -75,6 +84,8 @@ func indexHandler(w http.ResponseWriter, req *http.Request) {
 		fmt.Println(err)
 		return
 	}
+
+	getWeatherInfo(w, req)
 
 	if err := tmpl.ExecuteTemplate(w, "index.html", nil); err != nil {
 		fmt.Println(err)
