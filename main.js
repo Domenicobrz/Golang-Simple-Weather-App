@@ -5,14 +5,16 @@ var date, temperature, weather, lat, lon, city, country;
 
 function init() {
     "use strict";
+    /*  forwarded to templating system in Go
     xhr = new XMLHttpRequest();
     xhr.addEventListener("load", reqHandler);
     xhr.open("GET", "getweatherinfo");
-    xhr.send();
+    xhr.send(); */
 }
 
 function reqHandler(evt) {
     "use strict";
+    /*  forwarded to templating system in Go
     console.log(JSON.parse(evt.target.responseText));
     queryResult = evt.target.responseText;
 
@@ -32,4 +34,5 @@ function reqHandler(evt) {
     // up to 34: dispay  sunny
     // 35, 37-43 45-47   storm
     // 36 sunny
+    */
 }
