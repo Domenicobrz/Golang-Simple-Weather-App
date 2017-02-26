@@ -32,7 +32,7 @@ func main() {
 		   http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(SELECT%20woeid%20FROM%20geo.places%20WHERE%20text%3D%22(45%2C10)%22)&format=json
 	*/
 	serveFile := http.StripPrefix("/res/", http.FileServer(http.Dir(".")))
-	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/", getWeatherInfo)
 	http.Handle("/res/", serveFile)
 	http.ListenAndServe(":8080", nil)
 }
@@ -46,48 +46,8 @@ func getWeatherInfo(w http.ResponseWriter, req *http.Request) {
 		panic(err)
 	}
 
-	body, err := ioutil.ReadAll(response)
-	if err != nil {
+	if err = constructResponse(w, response, location); err != nil {
 		panic(err)
-	}
-	/*city = queryResult.results.channel.location.city;
-	  country = queryResult.results.channel.location.country;
-	  date = queryResult.results.channel.item.condition.date;
-	  temperature = queryResult.results.channel.item.condition.temp;
-	  weather = queryResult.results.channel.item.condition.text;
-	  lat = queryResult.results.channel.item.lat;
-	  lon = queryResult.results.channel.item.long;
-	  var condition_code = queryResult.results.channel.item.condition.code;*/
-	city := gjson.GetBytes(body, "query.results.channel.location.city")
-	country := gjson.GetBytes(body, "query.results.channel.location.country")
-	date := gjson.GetBytes(body, "query.results.channel.item.condition.date")
-	temperature := gjson.GetBytes(body, "query.results.channel.item.condition.temp")
-	code := gjson.GetBytes(body, "query.results.channel.item.condition.code")
-
-	var dat interface{}
-	if err := json.Unmarshal(body, &dat); err != nil {
-		panic(err)
-	}
-	// fmt.Println(dat)
-
-	fmt.Println(city, country, date, temperature, code)
-}
-
-func indexHandler(w http.ResponseWriter, req *http.Request) {
-	w.Header().Add("Content Type", "text/html")
-
-	tmpl, err := template.ParseFiles("index.html")
-
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	getWeatherInfo(w, req)
-
-	if err := tmpl.ExecuteTemplate(w, "index.html", nil); err != nil {
-		fmt.Println(err)
-		return
 	}
 }
 
@@ -139,4 +99,41 @@ func queryYahooWeatherAPI(lat string, lon string) (io.Reader, error) {
 	}
 
 	return yahoores.Body, err
+}
+
+func constructResponse(w http.ResponseWriter, response io.Reader, iploc _IPLocation) error {
+	body, err := ioutil.ReadAll(response)
+	if err != nil {
+		return err
+	}
+
+	city := gjson.GetBytes(body, "query.results.channel.location.city")
+	country := gjson.GetBytes(body, "query.results.channel.location.country")
+	date := gjson.GetBytes(body, "query.results.channel.item.condition.date")
+	temperature := gjson.GetBytes(body, "query.results.channel.item.condition.temp")
+	weather := gjson.GetBytes(body, "query.results.channel.item.condition.text")
+	code := gjson.GetBytes(body, "query.results.channel.item.condition.code")
+	lon := iploc.lon
+	lat := iploc.lat
+
+	var dat interface{}
+	if err := json.Unmarshal(body, &dat); err != nil {
+		return err
+	}
+
+	fmt.Println(city, country, date, temperature, code, weather, lon, lat)
+
+	// Template Creation
+	w.Header().Add("Content Type", "text/html")
+
+	tmpl, err := template.ParseFiles("index.html")
+	if err != nil {
+		return err
+	}
+
+	if err := tmpl.ExecuteTemplate(w, "index.html", nil); err != nil {
+		return err
+	}
+
+	return nil
 }
