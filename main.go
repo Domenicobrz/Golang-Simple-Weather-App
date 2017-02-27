@@ -21,6 +21,10 @@ type _IPLocation struct {
 	lon string
 }
 
+type WeatherInfo struct {
+	City string
+}
+
 func main() {
 	/*
 			example query
@@ -131,7 +135,8 @@ func constructResponse(w http.ResponseWriter, response io.Reader, iploc _IPLocat
 		return err
 	}
 
-	if err := tmpl.ExecuteTemplate(w, "index.html", nil); err != nil {
+	context := WeatherInfo{City: city.String()}
+	if err := tmpl.ExecuteTemplate(w, "index.html", context); err != nil {
 		return err
 	}
 
