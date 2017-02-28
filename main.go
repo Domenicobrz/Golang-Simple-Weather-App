@@ -21,8 +21,15 @@ type _IPLocation struct {
 	lon string
 }
 
-type WeatherInfo struct {
-	City string
+type weatherInfo struct {
+	City        string
+	Country     template.HTML
+	Date        string
+	Temperature string
+	Weather     string
+	Code        string
+	Longitude   string
+	Latitude    string
 }
 
 func main() {
@@ -135,7 +142,14 @@ func constructResponse(w http.ResponseWriter, response io.Reader, iploc _IPLocat
 		return err
 	}
 
-	context := WeatherInfo{City: city.String()}
+	context := weatherInfo{city.String(),
+		template.HTML("<i>" + country.String() + "</i>"),
+		date.String(),
+		temperature.String(),
+		weather.String(),
+		code.String(),
+		lon, lat}
+
 	if err := tmpl.ExecuteTemplate(w, "index.html", context); err != nil {
 		return err
 	}
