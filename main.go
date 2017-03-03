@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
@@ -11,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 
 	geoip2 "github.com/oschwald/geoip2-golang"
 	"github.com/tidwall/gjson"
@@ -113,6 +113,9 @@ func queryYahooWeatherAPI(lat string, lon string) (io.Reader, error) {
 }
 
 func constructResponse(w http.ResponseWriter, response io.Reader, iploc _IPLocation) error {
+	// Template Creation
+	w.Header().Add("Content Type", "text/html")
+
 	body, err := ioutil.ReadAll(response)
 	if err != nil {
 		return err
@@ -127,32 +130,76 @@ func constructResponse(w http.ResponseWriter, response io.Reader, iploc _IPLocat
 	lon := iploc.lon
 	lat := iploc.lat
 
-	var dat interface{}
-	if err := json.Unmarshal(body, &dat); err != nil {
-		return err
-	}
-
 	fmt.Println(city, country, date, temperature, code, weather, lon, lat)
 
-	// Template Creation
-	w.Header().Add("Content Type", "text/html")
-
-	tmpl, err := template.ParseFiles("index.html")
-	if err != nil {
-		return err
-	}
+	dateStr := date.String()
+	codeStr := code.String()
+	tmplFiles := getTemplateFiles(dateStr, codeStr)
+	tmpl := template.Must(template.ParseFiles(tmplFiles...))
+	// templates := template.Must(template.ParseGlob("templates/*.html"))
 
 	context := weatherInfo{city.String(),
 		template.HTML("<i>" + country.String() + "</i>"),
-		date.String(),
+		dateStr,
 		temperature.String(),
 		weather.String(),
-		code.String(),
+		codeStr,
 		lon, lat}
 
-	if err := tmpl.ExecuteTemplate(w, "index.html", context); err != nil {
+	/*
+		http://stackoverflow.com/questions/24755509/golang-templates-using-conditions-inside-templates
+		http://stackoverflow.com/questions/24755509/golang-templates-using-conditions-inside-templates
+		http://stackoverflow.com/questions/24755509/golang-templates-using-conditions-inside-templates
+	*/
+	if err := tmpl.ExecuteTemplate(w, "main", context); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func getHourFromDateQuery(date string) int {
+	index := strings.Index(date, ":")
+
+	/* TODO: test with fmt.Println */
+
+	if index > 0 {
+		hour, err := strconv.Atoi(date[index-2 : index])
+		// meridiem := date[index+4 : index+6]
+		if date[index+4:index+6] == "PM" {
+			hour += 12
+		}
+
+		if err != nil {
+			panic(err)
+		}
+
+		return hour
+	}
+
+	return -1
+}
+
+func getTemplateFiles(dateStr string, codeStr string) []string {
+	hour := getHourFromDateQuery(dateStr)
+
+	tmplFiles := []string{
+		"index.html",
+		"content.html"}
+
+	if hour > 21 || hour < 6 {
+		tmplFiles = append(tmplFiles, "night_theme.html")
+	} else {
+		tmplFiles = append(tmplFiles, "day_theme.html")
+	}
+
+	// appending a weather svg icon depending on the resulting code from the query
+	codeInt, _ := strconv.Atoi(codeStr)
+	if codeInt < 30 {
+		tmplFiles = append(tmplFiles, "icons/2.svg")
+	} else {
+		tmplFiles = append(tmplFiles, "icons/8.svg")
+	}
+
+	return tmplFiles
 }
