@@ -62,6 +62,23 @@ func getWeatherInfo(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func getUserIp(req *http.Request) string {
+	Ipstring := req.RemoteAddr
+	index := strings.Index(Ipstring, ":")
+	if index > 0 {
+		Ipstring = Ipstring[:index]
+	}
+
+	fmt.Println(Ipstring)
+
+	if proxies := req.Header.Get("x-forwarded-for"); proxies != "" {
+		ips := strings.Split(proxies, ", ")
+		return ips[0]
+	}
+
+	return Ipstring
+}
+
 func getIPLocation(req *http.Request) _IPLocation {
 	db, err := geoip2.Open("GeoLite2-City.mmdb")
 	if err != nil {
@@ -70,7 +87,7 @@ func getIPLocation(req *http.Request) _IPLocation {
 	defer db.Close()
 
 	// If you are using strings that may be invalid, check that ip is not nil
-	record, err := db.City(net.ParseIP("80.104.158.156"))
+	record, err := db.City(net.ParseIP("80.104.158.156" /* getUserIp(req) */))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -129,8 +146,6 @@ func constructResponse(w http.ResponseWriter, response io.Reader, iploc _IPLocat
 	code := gjson.GetBytes(body, "query.results.channel.item.condition.code")
 	lon := iploc.lon
 	lat := iploc.lat
-
-	fmt.Println(city, country, date, temperature, code, weather, lon, lat)
 
 	dateStr := date.String()
 	codeStr := code.String()
@@ -195,10 +210,18 @@ func getTemplateFiles(dateStr string, codeStr string) []string {
 
 	// appending a weather svg icon depending on the resulting code from the query
 	codeInt, _ := strconv.Atoi(codeStr)
-	if codeInt < 30 {
-		tmplFiles = append(tmplFiles, "icons/2.svg")
+	if codeInt < 25 {
+		tmplFiles = append(tmplFiles, "icons/storm.svg")
+	} else if codeInt < 30 {
+		tmplFiles = append(tmplFiles, "icons/cloudy.svg")
+	} else if codeInt <= 34 {
+		tmplFiles = append(tmplFiles, "icons/sunny.svg")
+	} else if codeInt == 35 {
+		tmplFiles = append(tmplFiles, "icons/storm.svg")
+	} else if codeInt == 36 {
+		tmplFiles = append(tmplFiles, "icons/sunny.svg")
 	} else {
-		tmplFiles = append(tmplFiles, "icons/8.svg")
+		tmplFiles = append(tmplFiles, "icons/storm.svg")
 	}
 
 	return tmplFiles
