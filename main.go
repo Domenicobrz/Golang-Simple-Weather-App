@@ -199,13 +199,13 @@ func getTemplateFiles(dateStr string, codeStr string) []string {
 	hour := getHourFromDateQuery(dateStr)
 
 	tmplFiles := []string{
-		"index.html",
-		"content.html"}
+		"templates/index.html",
+		"templates/content.html"}
 
 	if hour > 21 || hour < 6 {
-		tmplFiles = append(tmplFiles, "night_theme.html")
+		tmplFiles = append(tmplFiles, "templates/night_theme.html")
 	} else {
-		tmplFiles = append(tmplFiles, "day_theme.html")
+		tmplFiles = append(tmplFiles, "templates/day_theme.html")
 	}
 
 	// appending a weather svg icon depending on the resulting code from the query

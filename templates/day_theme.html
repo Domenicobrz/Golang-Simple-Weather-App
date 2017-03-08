@@ -1,0 +1,84 @@
+{{ define "theme" }}
+
+<style>
+    * {
+        margin: 0;
+    }
+
+    body {
+        color: #303030;
+    }
+
+    .widgetContainer {
+        width: 100%;
+        position: relative;
+        margin: auto;
+    }
+    .widgetContainer {
+        background: #00A5FF;
+        color: white;
+    }
+
+    @media all and (min-width: 480px) {
+        .widgetContainer {
+            width: 400px;
+        }
+    }
+    @media all and (min-width: 768px) {
+        .widgetContainer {
+            width: 450px;
+        }
+    }
+    @media all and (min-width: 992px) {
+        .widgetContainer {
+            width: 500px;
+        }
+    }
+    @media all and (min-width: 1200px) {
+        .widgetContainer {
+            width: 600px;
+        }
+    }
+
+    .widgetTopInfo {
+        display:flex;
+        flex-flow: row nowrap;
+    }
+    
+    .widgetTopInfo h1 {
+        padding: 1rem;
+        flex: 5 1 auto;
+    }
+
+    .widgetTopInfo div {
+        padding: 1rem 1rem 1rem 0;
+        flex: 1 1 auto;
+    }
+
+    .widgetTopInfo div p {
+        text-align: right;
+    }
+
+    .widgetCentralIcon {
+        position: relative;
+    }
+
+    .widgetCentralIcon svg {
+        position: relative;
+        width: 20%;
+        left: 40%;
+        height: auto;
+        fill: white;
+    }
+
+    .widgetWeatherDescription {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+
+    .widgetWeatherDescription::before {
+        content: "\2600";
+    }
+</style>
+
+{{ end }}
