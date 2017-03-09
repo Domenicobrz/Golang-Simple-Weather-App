@@ -13,10 +13,11 @@
         width: 100%;
         position: relative;
         margin: auto;
-    }
-    .widgetContainer {
         background: #00A5FF;
         color: white;
+        border-bottom-left-radius:  8px;
+        border-bottom-right-radius: 8px;
+        margin-top: 8rem;
     }
 
     @media all and (min-width: 480px) {
@@ -45,14 +46,23 @@
         flex-flow: row nowrap;
     }
     
-    .widgetTopInfo h1 {
-        padding: 1rem;
-        flex: 5 1 auto;
+    .widgetTopInfo div h1 {
+        text-align: center;
+    }
+
+    .widgetTopInfo div:first-child {
+        display: flex;
+        flex-flow: column nowrap;
+        flex: 1 1 auto;
+    }
+
+    .widgetTopInfo div:first-child p {
+        text-align: center;
     }
 
     .widgetTopInfo div {
         padding: 1rem 1rem 1rem 0;
-        flex: 1 1 auto;
+        flex: 5 1 auto;
     }
 
     .widgetTopInfo div p {
@@ -78,6 +88,46 @@
 
     .widgetWeatherDescription::before {
         content: "\2600";
+    }
+
+    .widgetFooter {
+        background: white;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        border: 2px solid #00A5FF;
+        border-bottom-left-radius:  8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    .widgetFooter div {
+        flex: 0 0 auto;
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+    }
+
+    .widgetFooter div p {
+        color: #00A5FF;
+        font-size: 1rem;
+        padding: 0rem 0.5rem;
+    }
+
+    .widgetFooter div p span {
+        font-size: 1.4rem;
+    } 
+
+    span.temperature {
+        color: #00A5FF;
+        flex: 0 0 auto;
+        font-family: serif;
+        font-size: 3rem;
+        padding: 1rem;
+    }
+
+    span.temperature::after {
+        content: '°f';
+        font-size: 1.3rem;
     }
 </style>
 

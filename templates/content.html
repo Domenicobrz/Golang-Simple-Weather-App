@@ -1,17 +1,11 @@
 {{ define "content" }}
 
-<p>{{ .City 	   }}</p>
-<p>{{ .Country     }}</p>
-<p>{{ .Date        }}</p>
-<p>{{ .Temperature }}</p>
-<p>{{ .Weather     }}</p>
-<p>{{ .Code        }}</p>
-<p>{{ .Longitude   }}</p>
-<p>{{ .Latitude    }}</p>
-
 <div class="widgetContainer">
     <div class="widgetTopInfo">
-        <h1>{{ .City 	   }}</h1>
+        <div>
+            <p>city</p>
+            <h1>{{ .City 	   }}</h1>
+        </div>
         <div>
             <p>{{ .Country     }}</p>
             <p>{{ .Date        }}</p>
@@ -21,8 +15,27 @@
           {{ template "icon" }}
     </div>
     <p class="widgetWeatherDescription">
-        {{ .Weather     }}
+        {{ .Weather    }}
     </p>
+    <div class="widgetFooter">
+        <span class="temperature">
+            {{ .Temperature   }}
+        </span>
+        <div>
+            <p>
+                <i>lon:</i>
+                <span>
+                    {{ .Longitude   }}
+                </span>
+            </p>
+            <p>
+                <i>lat:</i>
+                <span>
+                    {{ .Latitude    }}
+                </span>
+            </p>
+        </div>
+    </div>
 </div>
 
 {{ end }}
