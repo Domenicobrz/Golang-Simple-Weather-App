@@ -6,12 +6,133 @@
     }
 
     body {
-        background: #303030;
-        color: #d8d8d8;
+        color: #303030;
+        background: url('/images/bkg.jpg');
+        background-size: cover;
     }
-    svg {
-        width:  20vw;
-        height: 20vw;
+
+    .widgetContainer {
+        width: 100%;
+        position: relative;
+        margin: auto;
+        background:  rgba(18, 18, 18, 0.4);
+        color: white;
+        border-bottom-left-radius:  8px;
+        border-bottom-right-radius: 8px;
+        margin-top: 8rem;
+    }
+
+    @media all and (min-width: 480px) {
+        .widgetContainer {
+            width: 400px;
+        }
+    }
+    @media all and (min-width: 768px) {
+        .widgetContainer {
+            width: 450px;
+        }
+    }
+    @media all and (min-width: 992px) {
+        .widgetContainer {
+            width: 500px;
+        }
+    }
+    @media all and (min-width: 1200px) {
+        .widgetContainer {
+            width: 600px;
+        }
+    }
+
+    .widgetTopInfo {
+        display:flex;
+        flex-flow: row nowrap;
+    }
+    
+    .widgetTopInfo div h1 {
+        text-align: center;
+    }
+
+    .widgetTopInfo div:first-child {
+        display: flex;
+        flex-flow: column nowrap;
+        flex: 1 1 auto;
+    }
+
+    .widgetTopInfo div:first-child p {
+        text-align: center;
+    }
+
+    .widgetTopInfo div {
+        padding: 1rem 1rem 1rem 1rem;
+        flex: 5 1 auto;
+    }
+
+    .widgetTopInfo div p {
+        text-align: right;
+    }
+
+    .widgetCentralIcon {
+        position: relative;
+    }
+
+    .widgetCentralIcon svg {
+        position: relative;
+        width: 20%;
+        left: 40%;
+        height: auto;
+        fill: white;
+    }
+
+    .widgetWeatherDescription {
+        font-size: 1rem;
+        padding: 1rem;
+    }
+
+    .widgetWeatherDescription::before {
+        content: "\2600";
+    }
+
+    .widgetFooter {
+        background: rgba(34, 34, 34, 0.65);
+        -moz-background-clip: padding;     /* Firefox 3.6 */
+        -webkit-background-clip: padding;  /* Safari 4? Chrome 6? */
+        background-clip: padding-box;      /* Firefox 4, Safari 5, Opera 10, IE 9 */
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        border: 2px solid rgba(18, 18, 18, 0.4);
+        border-bottom-left-radius:  8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    .widgetFooter div {
+        flex: 0 0 auto;
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+    }
+
+    .widgetFooter div p {
+        color: white;
+        font-size: 1rem;
+        padding: 0rem 0.5rem;
+    }
+
+    .widgetFooter div p span {
+        font-size: 1.4rem;
+    } 
+
+    span.temperature {
+        color: white;
+        flex: 0 0 auto;
+        font-family: serif;
+        font-size: 3rem;
+        padding: 1rem;
+    }
+
+    span.temperature::after {
+        content: '°f';
+        font-size: 1.3rem;
     }
 </style>
 

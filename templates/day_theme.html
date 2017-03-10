@@ -7,13 +7,15 @@
 
     body {
         color: #303030;
+        background: url('/images/bkg.jpg');
+        background-size: cover;
     }
 
     .widgetContainer {
         width: 100%;
         position: relative;
         margin: auto;
-        background: #00A5FF;
+        background:  rgba(0, 175 ,255, 0.4);
         color: white;
         border-bottom-left-radius:  8px;
         border-bottom-right-radius: 8px;
@@ -61,7 +63,7 @@
     }
 
     .widgetTopInfo div {
-        padding: 1rem 1rem 1rem 0;
+        padding: 1rem 1rem 1rem 1rem;
         flex: 5 1 auto;
     }
 
@@ -91,11 +93,14 @@
     }
 
     .widgetFooter {
-        background: white;
+        background: rgba(255, 255, 255, 0.85);
+        -moz-background-clip: padding;     /* Firefox 3.6 */
+        -webkit-background-clip: padding;  /* Safari 4? Chrome 6? */
+        background-clip: padding-box;      /* Firefox 4, Safari 5, Opera 10, IE 9 */
         display: flex;
         flex-flow: row nowrap;
         justify-content: space-between;
-        border: 2px solid #00A5FF;
+        border: 2px solid rgba(0, 175 ,255, 0.4);
         border-bottom-left-radius:  8px;
         border-bottom-right-radius: 8px;
     }
