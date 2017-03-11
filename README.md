@@ -1,6 +1,6 @@
 # Golang-Simple-Weather-App
 
-<img align="center" src="screenshots/screen2.png" alt="screenshot">
+<img align="middle" src="screenshots/screen2.png" alt="screenshot">
 
 
 A quick example on how to process a request's IP address to show weather information in a very simple golang application
