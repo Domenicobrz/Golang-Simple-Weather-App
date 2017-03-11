@@ -88,7 +88,7 @@ func getIPLocation(req *http.Request) _IPLocation {
 	defer db.Close()
 
 	// If you are using strings that may be invalid, check that ip is not nil
-	record, err := db.City(net.ParseIP("80.104.158.156" /* getUserIp(req) */))
+	record, err := db.City(net.ParseIP(getUserIp(req)))
 	if err != nil {
 		log.Fatal(err)
 	}
